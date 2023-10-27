@@ -4,7 +4,7 @@ const {joiValidation} = require("../../utils/joiValidation.js");
 const updateContact = async (req, res, next) => {
 
       const { contactId } = req.params;
-  
+      const currentUserID = req.user;
       const { name, email, phone } = req.body;
   
       if (!name & !email & !phone) {
@@ -19,7 +19,7 @@ const updateContact = async (req, res, next) => {
         throw error;
       }
   
-      const result = await Contact.findOneAndUpdate({_id: contactId}, req.body, {new: true});
+      const result = await Contact.findOneAndUpdate({_id: contactId, owner: currentUserID}, req.body, {new: true});
   
       res.json({
         status: "success",
