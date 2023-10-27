@@ -6,17 +6,17 @@ const updateFavorite = async (req, res, next) => {
       if (!req.body.hasOwnProperty("favorite")) {
         res.status(400).json({ message: "missing field favorite" });
       }
-  
+      
       const validationError = joiFavorite(req.body);
       if (validationError) {
         const error = requestError(400, validationError.message);
         throw error;
       }
-  
+      const currentUserID = req.user._id;
       const { contactId } = req.params;
       const {favorite} = req.body;
       
-      const data = await Contact.findOneAndUpdate({_id: contactId}, {favorite}, {new: true});
+      const data = await Contact.findOneAndUpdate({_id: contactId, owner: currentUserID}, {favorite}, {new: true});
       
       if(!data) {
         const error = {status: 404, message: "Not found"};

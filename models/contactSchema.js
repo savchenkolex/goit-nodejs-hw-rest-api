@@ -16,6 +16,10 @@ const contactSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: 'user',
+    }
   },
   {
     versionKey: false,
@@ -30,6 +34,6 @@ contactSchema.post('save', (error, data, next)=>{
   next();
 })
 
-const Contact = model("contact", contactSchema);
+const Contact = model("contacts", contactSchema);
 
 module.exports = Contact;
