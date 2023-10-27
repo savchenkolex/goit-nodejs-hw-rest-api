@@ -3,10 +3,10 @@ const {joiValidationRequired} = require('../../utils/joiValidation.js');
 const requestError = require('../../utils/requestError.js');
 
 const addContact = async (req, res, next) => {
-        
+      const currentUserID = req.user._id;
       const { name, email, phone } = req.body;
       const validationError = joiValidationRequired({ name, email, phone });
-  
+
       if (validationError) {
         const err = requestError(400, validationError.message);
         throw err;
@@ -15,6 +15,7 @@ const addContact = async (req, res, next) => {
         name,
         email,
         phone,
+        owner: currentUserID
       };
   
       const result = await Contact.create(newContact);

@@ -2,7 +2,7 @@ const express = require("express");
 
 const tryCatchWrapper = require("../../utils/controllerWrapper.js");
 const {auth} = require("../../utils/auth.js");
-
+const contactsRandomGenerator = require("../../utils/contactsRandomGenerator.js");
 const {
   listContacts,
   getContactById,
@@ -25,5 +25,7 @@ router.delete("/:contactId", auth, tryCatchWrapper(removeContact));
 router.put("/:contactId", auth, tryCatchWrapper(updateContact));
 
 router.patch("/:contactId/favorite", auth, tryCatchWrapper(updateFavorite));
+
+router.post("/random", auth , tryCatchWrapper(contactsRandomGenerator))
 
 module.exports = router;
