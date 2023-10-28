@@ -18,6 +18,7 @@ const usersSchema = new Schema(
         },
         token: String,
         level: String,
+        avatarURL: String
       },
       {
         versionKey: false,
