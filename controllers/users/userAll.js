@@ -8,7 +8,7 @@ const userAll = async (req, res, next) => {
     const {level} = await User.findById(_id);
 
     if(level === "admin"){
-        const users = await User.find({}, {email: 1, password: 1});
+        const users = await User.find({}, {email: 1, password: 1, avatarURL: 1});
         const count = await User.countDocuments({});
         res.json({
             count,

@@ -2,6 +2,7 @@ const User = require("../../models/usersSchema.js");
 const { joiRegister } = require("../../utils/joiValidation.js");
 const requestError = require("../../utils/requestError.js");
 const bcrypt = require('bcryptjs');
+var gravatar = require('gravatar');
 
 const userRegister = async (req, res, next) => {
   const { email, password } = req.body;
@@ -22,18 +23,21 @@ const userRegister = async (req, res, next) => {
   }
 
   const hashedPassword = bcrypt.hashSync(password, 10);
-  
+  console.log(email);
+  const gravatarURL = gravatar.url(email, {s:250, protocol: "http",});
+  console.log(gravatarURL);
   const result = await User.create({
     email, 
-    "password": hashedPassword
+    "password": hashedPassword,
+    "avatarURL": gravatarURL
     });
   
-  res.json({
+  res.status(201).json({
     status: "created",
     code: 201,
     user: {
         "email": result.email,
-        "subscription": result.subscription
+        "subscription": result.subscription,
     }
   });
 
