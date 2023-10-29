@@ -1,6 +1,7 @@
 const User = require("../../models/usersSchema.js");
 const fs = require("fs").promises;
 const path = require("path");
+const jimp = require("jimp");
 // const util = require('util');
 // const exec = util.promisify(require('child_process').exec);
 
@@ -18,9 +19,15 @@ const userAvatars = async (req, res, next) => {
     const avatarsDir = path.join(process.cwd(), "public", "avatars");
     const {_id} = req.user._id;
     const {path: tempUpload, originalname} = req.file;
+    console.log(tempUpload);
     const filename = `${_id}_${originalname}`;
     const resultUpload = path.join(avatarsDir, filename);
-    await fs.rename(tempUpload, resultUpload);
+    jimp.read(tempUpload)
+        .then((image)=>{
+            image.cover(250, 250).write(resultUpload);
+        })
+        .catch((error) => {console.log(error)});
+    // await fs.rename(tempUpload, resultUpload);
     const avatarURL = path.join("avatars", filename);
     await User.findByIdAndUpdate(_id, {avatarURL});
 
