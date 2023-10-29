@@ -1,34 +1,34 @@
-const express = require("express");
-const logger = require("morgan");
-const cors = require("cors");
-require("dotenv").config();
+const express = require('express')
+const logger = require('morgan')
+const cors = require('cors')
+require('dotenv').config();
 
-const contactsRoutes = require("./routes/api/contactsRoutes");
-const userRoutes = require("./routes/api/userRoutes");
 
-const app = express();
+const contactsRoutes = require('./routes/api/contactsRoutes');
+const userRoutes = require('./routes/api/userRoutes');
 
-const formatsLogger = app.get("env") === "development" ? "dev" : "short";
+const app = express()
 
-app.use(logger(formatsLogger));
-app.use(cors());
-app.use(express.json());
-app.use(express.static("public"));
+const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'
 
-app.use("/api/contacts", contactsRoutes);
-app.use("/api/users", userRoutes);
+app.use(logger(formatsLogger))
+app.use(cors())
+app.use(express.json())
+
+app.use('/api/contacts', contactsRoutes);
+app.use('/api/users', userRoutes);
 
 app.use((req, res) => {
-  res.status(404).json({ message: "Not found" });
-});
+  res.status(404).json({ message: 'Not found' })
+})
 
 app.use((err, req, res, next) => {
-  let { status = 500, message = "Server Error" } = err;
-  if (message.includes("ENOENT")) {
-    message = "Server Error";
-  }
+  let {status = 500, message = "Server Error"} = err;
+    if (message.includes('ENOENT')) {
+      message = "Server Error";
+    }
 
-  res.status(status).json({ message });
-});
+    res.status(status).json({message});
+})
 
-module.exports = app;
+module.exports = app
