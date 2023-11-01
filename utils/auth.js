@@ -2,6 +2,8 @@ const jwt = require("jsonwebtoken");
 const requestError = require("./requestError.js");
 const User = require("../models/usersSchema.js");
 const tryCatchWrapper = require("./controllerWrapper.js");
+const sendVerificationEmail = require("./sendGridEmail.js");
+const {v4: uuidv4} = require('uuid');
 
 const auth = async (req, res, next) => {
   const {JWT_SECRET} = process.env;
@@ -19,8 +21,16 @@ const auth = async (req, res, next) => {
     });
   
   req.user = await User.findById(user_id, {password: 0, createdAt: 0, updatedAt:0})
+
+  if(req.user.verify){
+    next();
+  } else {
+    const verificationToken = uuidv4();
+    await sendVerificationEmail(req.user.email, verificationToken);
+    await User.findByIdAndUpdate({_id: req.user._id}, {verificationToken});
+    res.json({"message":"Verification email sent"});
+  }
   
-  next();
 }
 
 module.exports = {auth: tryCatchWrapper(auth)};

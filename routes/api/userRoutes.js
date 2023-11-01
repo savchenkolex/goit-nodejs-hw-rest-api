@@ -11,7 +11,9 @@ const {
     userAll,
     userCurrent,
     userAvatars,
-    userGetAvatars
+    userGetAvatars,
+    userVerificationEmail,
+    resendVerificationEmail
   } = require("../../controllers/users");
 
 const router = express.Router();
@@ -30,5 +32,8 @@ router.get("/avatars", auth, tryCatchWrapper(userGetAvatars));
 
 router.patch("/avatars", auth, upload.single("avatar"), tryCatchWrapper(userAvatars));
 
+router.get("/verify/:verificationToken", tryCatchWrapper(userVerificationEmail));
+
+router.post("/verify", tryCatchWrapper(resendVerificationEmail))
 
 module.exports = router;
