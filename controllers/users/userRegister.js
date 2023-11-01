@@ -3,6 +3,8 @@ const { joiRegister } = require("../../utils/joiValidation.js");
 const requestError = require("../../utils/requestError.js");
 const bcrypt = require('bcryptjs');
 var gravatar = require('gravatar');
+const sendVerificationEmail = require('../../utils/sendGridEmail.js');
+const {v4: uuidv4} = require('uuid');
 
 const userRegister = async (req, res, next) => {
   const { email, password } = req.body;
@@ -23,13 +25,18 @@ const userRegister = async (req, res, next) => {
   }
 
   const hashedPassword = bcrypt.hashSync(password, 10);
-  console.log(email);
+  
   const gravatarURL = gravatar.url(email, {s:250, protocol: "http",});
-  console.log(gravatarURL);
+  
+  const verificationToken = uuidv4();
+  
+  await sendVerificationEmail(email, verificationToken);
+
   const result = await User.create({
     email, 
     "password": hashedPassword,
-    "avatarURL": gravatarURL
+    "avatarURL": gravatarURL,
+    verificationToken
     });
   
   res.status(201).json({
